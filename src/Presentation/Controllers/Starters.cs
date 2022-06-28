@@ -22,17 +22,30 @@ namespace Presentation.Controllers
         [Route("Two-Power")]
         public async Task<ActionResult> IsNumberTwoPower(int number)
         {
-            logger.Log(LogLevel.Information, $"Proxy gateway - > receiving request with number : {number}");
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request : {number}");
 
             var response = await mediator.Send(new IsNumberTwoPowerQuery(number));
 
-            logger.Log(LogLevel.Information, $"Proxy gateway - > sending response");
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
 
             if (!response)
             {
                 return BadRequest();
             }
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("ReverseString")]
+        public async Task<ActionResult> ReverseString(string text)
+        {
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request: {text}");
+
+            var response = await mediator.Send(new GetReverseStringQuery(text));
+
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
+
+            return Ok(response);
         }
 
     }

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.StarterTasks.Queries
 {
-    public class IsNumberTwoPowerQuery: IRequest<bool>
+    public class IsNumberTwoPowerQuery : IRequest<bool>
     {
         public IsNumberTwoPowerQuery(int number)
         {
