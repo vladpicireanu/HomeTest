@@ -48,5 +48,17 @@ namespace Presentation.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("ReplicateString")]
+        public async Task<ActionResult> ReverseString(string text, int replicas)
+        {
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request: {text} {replicas}");
+
+            var response = await mediator.Send(new GetReplicateStringQuery(text, replicas));
+
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
+
+            return Ok(response);
+        }
     }
 }
