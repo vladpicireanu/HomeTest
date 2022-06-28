@@ -50,11 +50,24 @@ namespace Presentation.Controllers
 
         [HttpGet]
         [Route("ReplicateString")]
-        public async Task<ActionResult> ReverseString(string text, int replicas)
+        public async Task<ActionResult> ReplicateString(string text, int replicas)
         {
             logger.Log(LogLevel.Information, $"Proxy - > receiving request: {text} {replicas}");
 
             var response = await mediator.Send(new GetReplicateStringQuery(text, replicas));
+
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("OddNumbers")]
+        public async Task<ActionResult> OddNumbers(int startNumber, int stopNumber)
+        {
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request: {startNumber} {stopNumber}");
+
+            var response = await mediator.Send(new GetOddNumbersQuery(startNumber, stopNumber));
 
             logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
 
