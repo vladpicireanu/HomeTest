@@ -1,0 +1,26 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Presentation";
+
+package library;
+
+service Library {
+	rpc GetBookById (GetBookByIdRequest) returns (GetBookByIdReply);
+}
+
+message GetBookByIdRequest {
+	int32 book_id = 1;
+}
+
+message GetBookByIdReply {
+	Book book = 1;
+}
+
+message Book {
+	int32 book_id = 1;
+	string name = 2;
+	int32 pages = 3;
+	int32 copies = 4;
+}

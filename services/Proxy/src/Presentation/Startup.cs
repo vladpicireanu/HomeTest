@@ -1,6 +1,8 @@
-﻿using Autofac;
+﻿using Application.Abstractions;
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Infrastructure.AutofacModules;
+using Infrastructure.gRPC;
 using MediatR;
 using System.Reflection;
 
@@ -34,6 +36,7 @@ namespace Presentation
 
             services.AddControllers();
 
+            services.AddSingleton<ICoreLibraryGrpcClient, CoreLibraryGrpcClient>();
             services.AddAutofac();
             services.AddHealthChecks();
             services.AddHttpContextAccessor();

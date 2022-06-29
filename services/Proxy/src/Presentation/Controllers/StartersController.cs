@@ -1,5 +1,4 @@
-﻿using System;
-using Application.StarterTasks.Queries;
+﻿using Application.StarterTasks.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,12 +6,12 @@ namespace Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class Starters: Controller
+    public class StartersController: ControllerBase
     {
-        private readonly ILogger<Starters> logger;
+        private readonly ILogger<StartersController> logger;
         private IMediator mediator;
 
-        public Starters(ILogger<Starters> logger, IMediator mediator)
+        public StartersController(ILogger<StartersController> logger, IMediator mediator)
         {
             this.logger = logger;
             this.mediator = mediator;
