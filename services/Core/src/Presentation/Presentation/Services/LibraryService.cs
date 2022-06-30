@@ -35,12 +35,26 @@ namespace Presentation.Services
 
             return mapper.Map<GetBookAvailabilityReply>(result);
         }
+
         public override async Task<GetMostBorrowedBooksReply> GetMostBorrowedBooks(GetMostBorrowedBooksRequest request, ServerCallContext context)
         {
             var result = await mediator.Send(new GetMostBorrowedBooksQuery(request.TopRange), context.CancellationToken);
             var response = new GetMostBorrowedBooksReply();
 
-            response.Books.AddRange(mapper.Map<List<Book>>(result.MostBorrowedBooks));
+            response.Books.AddRange(mapper.Map<List<Book>>(result.Books));
+
+            return response;
+        }
+
+        public override async Task<GetUsersWithMostRentsReply> GetUsersWithMostRents(GetUsersWithMostRentsRequest request, ServerCallContext context)
+        {
+            var queryRequest = new GetUsersWithMostRentsQuery(
+                request.TopRange, request.StartTime.ToDateTimeOffset(), request.EndTime.ToDateTimeOffset());
+
+            var result = await mediator.Send(queryRequest, context.CancellationToken);
+            var response = new GetUsersWithMostRentsReply();
+
+            response.Users.AddRange(mapper.Map<List<User>>(result.Users));
 
             return response;
         }

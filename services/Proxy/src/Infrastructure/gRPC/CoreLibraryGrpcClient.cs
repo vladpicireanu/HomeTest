@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions;
 using Application.Models;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
@@ -59,6 +60,24 @@ namespace Infrastructure.gRPC
             var result = await client.GetMostBorrowedBooksAsync(requestMessage, GetCorrelationMetaData());
 
             return mapper.Map<List<Application.Models.Book>>(result.Books);
+        }
+
+        public async Task<List<UserMostRents>> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime)
+        {
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            using var channel = GrpcChannel.ForAddress(clientUrl);
+            var client = new Library.LibraryClient(channel);
+
+            var requestMessage = new GetUsersWithMostRentsRequest
+            { 
+                EndTime = endTime.ToTimestamp(),
+                StartTime = startTime.ToTimestamp(),
+                TopRange = topRange
+            };
+
+            var result = await client.GetUsersWithMostRentsAsync(requestMessage, GetCorrelationMetaData());
+
+            return mapper.Map<List<UserMostRents>>(result.Users);
         }
     }
 }

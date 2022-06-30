@@ -30,7 +30,7 @@ namespace Application.Library.Queries
             {
                 var response = new GetMostBorrowedBooksResponse
                 {
-                    MostBorrowedBooks = mapper.Map<List<BookModel>>(libraryRepository.GetMostBorrowedBooks(request.TopRange))
+                    Books = mapper.Map<List<BookModel>>(libraryRepository.GetMostBorrowedBooks(request.TopRange))
                 };
 
                 return Task.FromResult(response);

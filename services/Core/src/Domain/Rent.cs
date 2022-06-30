@@ -18,9 +18,9 @@ namespace Domain
         public int UserId { get; set; }
 
         [Required]
-        public DateTimeOffset RentStartDate { get; set; }
+        public DateTimeOffset StartDate { get; set; }
 
-        public DateTimeOffset? RentStopDate { get; set; }
+        public DateTimeOffset? StopDate { get; set; }
 
         public virtual Book Book { get; set; } = null!;
 

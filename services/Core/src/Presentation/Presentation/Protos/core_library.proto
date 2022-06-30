@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Presentation";
 
@@ -10,6 +11,7 @@ service Library {
 	rpc GetBookById (GetBookByIdRequest) returns (GetBookByIdReply);
 	rpc GetBookAvailability (GetBookAvailabilityRequest) returns (GetBookAvailabilityReply);
 	rpc GetMostBorrowedBooks (GetMostBorrowedBooksRequest) returns (GetMostBorrowedBooksReply);
+	rpc GetUsersWithMostRents (GetUsersWithMostRentsRequest) returns (GetUsersWithMostRentsReply);
 }
 
 message GetBookByIdRequest {
@@ -22,6 +24,12 @@ message GetBookAvailabilityRequest {
 
 message GetMostBorrowedBooksRequest {
 	int32 top_range = 1;
+}
+
+message GetUsersWithMostRentsRequest {
+	int32 top_range = 1;
+	google.protobuf.Timestamp start_time = 2;
+	google.protobuf.Timestamp end_time = 3;
 }
 
 message GetBookByIdReply {
@@ -39,9 +47,21 @@ message GetMostBorrowedBooksReply {
 	repeated Book books = 1;
 }
 
+message GetUsersWithMostRentsReply {
+	repeated User users = 1;
+}
+
 message Book {
 	int32 book_id = 1;
 	string name = 2;
 	int32 pages = 3;
 	int32 copies = 4;
+}
+
+message User {
+	int32 UserId = 1;
+	string FirstName = 2;
+	string LastName = 3;
+	google.protobuf.StringValue email = 4;
+	int32 rents = 5;
 }

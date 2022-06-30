@@ -28,7 +28,7 @@ namespace Presentation
         {
             builder.RegisterModule(new MediatorModule());
         }
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -48,7 +48,6 @@ namespace Presentation
             services.AddMediatR(Assembly.GetExecutingAssembly());
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -63,19 +62,11 @@ namespace Presentation
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-
-                endpoints.MapGet("/env", async context =>
-                {
-                    string isEnv = $"IsDevelopment:{env.IsDevelopment()}, IsStaging:{env.IsStaging()}, IsProduction:{env.IsProduction()}";
-
-                    await context.Response.WriteAsync($"Proxy service is running. EnvironmentName={env.EnvironmentName}.{isEnv}.");
-                });
                 endpoints.MapHealthChecks("/health");
             });
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                // "swagger.json" is hardcoded (will not work with any other json filename)
                 c.SwaggerEndpoint(
                    String.Format("/swagger/{0}/swagger.json", apiVersion),
                    String.Format("{0} {1}", apiName, apiVersion));

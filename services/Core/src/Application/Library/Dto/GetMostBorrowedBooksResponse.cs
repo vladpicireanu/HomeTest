@@ -4,6 +4,6 @@ namespace Application.Library.Dto
 {
     public class GetMostBorrowedBooksResponse
     {
-        public List<BookModel> MostBorrowedBooks { get; set; } = null!;
+        public List<BookModel> Books { get; set; } = null!;
     }
 }

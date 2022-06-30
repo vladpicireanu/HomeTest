@@ -2,6 +2,8 @@
 using Application.Models;
 using Domain;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Infrastructure.Repository
 {
@@ -52,6 +54,26 @@ namespace Infrastructure.Repository
 
             if (topRange > context.Books.Count())
                 return new List<Book>();
+
+            return bookAvailability.GetRange(0, topRange);
+        }
+
+        public List<UserMostRents> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime)
+        {
+            var bookAvailability = context.Users
+                .Select(user => new UserMostRents
+                {
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Rents = user.Rents.Where(rent => rent.StartDate >= startTime && rent.StartDate <= endTime).Count()
+                })
+                .OrderByDescending(user => user.Rents)
+                .ToList();
+
+            if (topRange > context.Users.Count())
+                return new List<UserMostRents>();
 
             return bookAvailability.GetRange(0, topRange);
         }

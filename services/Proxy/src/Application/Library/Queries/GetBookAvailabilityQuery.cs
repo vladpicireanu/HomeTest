@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions;
 using MediatR;
-using Application.Library.Dto;
+using Application.Library.Dto.Responses;
 
 namespace Application.Library.Queries
 {

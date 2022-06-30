@@ -29,23 +29,30 @@ namespace Infrastructure.PreparationDb
             if (!context.Users.Any())
             {
                 context.Users.AddRange(
-                    new User() { FirstName = "john", LastName = "X", Email = "test@test.com" },
-                    new User() { FirstName = "Emma", LastName = "Y" },
-                    new User() { FirstName = "Rick", LastName = "Z" }
+                    new User() { FirstName = "john", LastName = "User1", Email = "test@test.com" },
+                    new User() { FirstName = "Emma", LastName = "User2" },
+                    new User() { FirstName = "Rick", LastName = "User3" }
                 );
             }
 
             if (!context.Rents.Any())
             {
                 context.Rents.AddRange(
-                    new Rent() { BookId = 1, UserId = 1, RentStartDate = new DateTimeOffset(DateTime.Now.AddDays(-1)) },
-                    new Rent() { BookId = 2, UserId = 3, RentStartDate = new DateTimeOffset(DateTime.Now) },
+                    new Rent() { BookId = 1, UserId = 1, StartDate = new DateTimeOffset(DateTime.Now.AddDays(-5)) },
+                    new Rent() { BookId = 2, UserId = 3, StartDate = new DateTimeOffset(DateTime.Now) },
                     new Rent()
                     {
                         BookId = 1,
                         UserId = 1,
-                        RentStartDate = new DateTimeOffset(DateTime.Now.AddDays(-1)),
-                        RentStopDate = new DateTimeOffset(DateTime.Now)
+                        StartDate = new DateTimeOffset(DateTime.Now.AddDays(-3)),
+                        StopDate = new DateTimeOffset(DateTime.Now.AddDays(-1))
+                    },
+                    new Rent()
+                    {
+                        BookId = 3,
+                        UserId = 2,
+                        StartDate = new DateTimeOffset(DateTime.Now.AddDays(-8)),
+                        StopDate = new DateTimeOffset(DateTime.Now.AddDays(-4))
                     }
                 );
             }

@@ -1,6 +1,6 @@
 ﻿using Application.Models;
 
-namespace Application.Library.Dto
+namespace Application.Library.Dto.Responses
 {
     public class GetBookAvailabilityResponse
     {

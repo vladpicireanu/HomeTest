@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions;
 using MediatR;
-using MapsterMapper;
-using Application.Library.Dto;
+using Application.Library.Dto.Responses;
+using Application.Models;
 
 namespace Application.Library.Queries
 {
@@ -17,19 +17,17 @@ namespace Application.Library.Queries
         public class GetMostBorrowedBooksQueryHandler : IRequestHandler<GetMostBorrowedBooksQuery, GetMostBorrowedBooksResponse>
         {
             private readonly ICoreLibraryGrpcClient coreLibraryGrpcClient;
-            private readonly IMapper mapper;
 
-            public GetMostBorrowedBooksQueryHandler(ICoreLibraryGrpcClient coreLibraryGrpcClient, IMapper mapper)
+            public GetMostBorrowedBooksQueryHandler(ICoreLibraryGrpcClient coreLibraryGrpcClient)
             {
                 this.coreLibraryGrpcClient = coreLibraryGrpcClient;
-                this.mapper = mapper;
             }
 
             public async Task<GetMostBorrowedBooksResponse> Handle(GetMostBorrowedBooksQuery request, CancellationToken cancellationToken)
             {
                 var response = await coreLibraryGrpcClient.GetMostBorrowedBooks(request.TopRange);
 
-                return new GetMostBorrowedBooksResponse { Books = new List<Models.Book>(response) };
+                return new GetMostBorrowedBooksResponse { Books = new List<Book>(response) };
             }
         }
     }

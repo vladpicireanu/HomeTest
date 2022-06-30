@@ -55,5 +55,18 @@ namespace Presentation.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("GetUsersWithMostRents")]
+        public async Task<ActionResult> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime)
+        {
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request : {topRange} {startTime} {endTime}");
+
+            var response = await mediator.Send(new GetUsersWithMostRentsQuery(topRange, startTime, endTime));
+
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
+
+            return Ok(response);
+        }
     }
 }
