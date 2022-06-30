@@ -7,7 +7,7 @@ namespace Domain
     {
         [Key]
         [Required]
-        public int Id { get; set; }
+        public int RentId { get; set; }
 
         [Required]
         [ForeignKey("Book")]
@@ -21,5 +21,9 @@ namespace Domain
         public DateTimeOffset RentStartDate { get; set; }
 
         public DateTimeOffset? RentStopDate { get; set; }
+
+        public virtual Book Book { get; set; } = null!;
+
+        public virtual User User { get; set; } = null!;
     }
 }

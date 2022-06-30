@@ -1,13 +1,13 @@
 ﻿namespace Domain
 {
-    public class Book
+    public class BookAvailability
     {
         public int BookId { get; set; }
 
         public string Name { get; set; } = null!;
 
-        public int Pages { get; set; }
+        public int Borrowed { get; set; }
 
-        public int Copies { get; set; }
+        public int Available { get; set; }
     }
 }

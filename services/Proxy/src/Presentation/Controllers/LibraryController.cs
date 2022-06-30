@@ -29,5 +29,18 @@ namespace Presentation.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("GetBookAvailability")]
+        public async Task<ActionResult> GetBookAvailability(int bookId)
+        {
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request : {bookId}");
+
+            var response = await mediator.Send(new GetBookAvailabilityQuery(bookId));
+
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
+
+            return Ok(response);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions;
 using Domain;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
@@ -13,6 +14,11 @@ namespace Infrastructure.Repository
             this.context = context;
         }
 
+        public bool SaveChanges()
+        {
+            return (context.SaveChanges() >= 0);
+        }
+
         public void CreateBook(Book book)
         {
             if (book != null)
@@ -23,12 +29,21 @@ namespace Infrastructure.Repository
 
         public Book GetBookById(int Id)
         {
-            return context.Books.FirstOrDefault(b => b.Id == Id);
+            return context.Books.FirstOrDefault(b => b.BookId == Id);
         }
 
-        public bool SaveChanges()
+        public BookAvailability GetBookAvailability(int Id)
         {
-            return (context.SaveChanges() >= 0);
+            var bookAvailability = context.Books.Where(book => book.BookId == Id)
+                .Select(i => new BookAvailability
+                {
+                    BookId = i.BookId,
+                    Name = i.Name,
+                    Borrowed = i.Rents.Count,
+                    Available = i.Copies - i.Rents.Count
+                }).FirstOrDefault();
+
+            return bookAvailability;
         }
     }
 }

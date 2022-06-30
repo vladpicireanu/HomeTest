@@ -8,6 +8,8 @@ namespace Application.Abstractions
 
         Book GetBookById(int Id);
 
+        BookAvailability GetBookAvailability(int Id);
+
         void CreateBook(Book book);
     }
 }

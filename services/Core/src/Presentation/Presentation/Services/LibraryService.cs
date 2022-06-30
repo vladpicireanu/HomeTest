@@ -28,5 +28,12 @@ namespace Presentation.Services
                 Book = mapper.Map<Book>(result)
             };
         }
+
+        public override async Task<GetBookAvailabilityReply> GetBookAvailability(GetBookAvailabilityRequest request, ServerCallContext context)
+        {
+            var result = await mediator.Send(new GetBookAvailabilityQuery(request.BookId), context.CancellationToken);
+
+            return mapper.Map<GetBookAvailabilityReply>(result);
+        }
     }
 }
