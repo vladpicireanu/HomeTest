@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Application.Abstractions;
+using Infrastructure.Mapper;
 using Infrastructure.Persistence;
 using Infrastructure.PreparationDb;
 using Infrastructure.Repository;
@@ -26,6 +27,7 @@ namespace Presentation
                 option.UseInMemoryDatabase("InMemory"));
 
             services.AddGrpc();
+            services.AddMapster();
             services.AddMediatR(typeof(GetBookByIdQueryHandler).GetTypeInfo().Assembly);
             services.AddScoped<ILibraryRepository, LibraryRepository>();
         }

@@ -11,11 +11,11 @@ namespace Domain
 
         [Required]
         [ForeignKey("Book")]
-        public Guid BookId { get; set; }
+        public int BookId { get; set; }
 
         [Required]
         [ForeignKey("User")]
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
 
         [Required]
         public DateTimeOffset RentStartDate { get; set; }

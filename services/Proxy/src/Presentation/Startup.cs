@@ -3,6 +3,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Infrastructure.AutofacModules;
 using Infrastructure.gRPC;
+using Infrastructure.Mapper;
 using MediatR;
 using System.Reflection;
 
@@ -38,6 +39,7 @@ namespace Presentation
 
             services.AddSingleton<ICoreLibraryGrpcClient, CoreLibraryGrpcClient>();
             services.AddAutofac();
+            services.AddMapster();
             services.AddHealthChecks();
             services.AddHttpContextAccessor();
             var builder = new ContainerBuilder();

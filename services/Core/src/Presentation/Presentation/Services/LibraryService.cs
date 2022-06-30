@@ -1,5 +1,6 @@
 using Application.Library.Queries;
 using Grpc.Core;
+using MapsterMapper;
 using MediatR;
 
 
@@ -9,11 +10,13 @@ namespace Presentation.Services
     {
         private readonly ILogger<LibraryService> _logger;
         private readonly IMediator mediator;
+        private readonly IMapper mapper;
 
-        public LibraryService(ILogger<LibraryService> logger, IMediator mediator)
+        public LibraryService(ILogger<LibraryService> logger, IMediator mediator, IMapper mapper)
         {
             _logger = logger;
             this.mediator = mediator;
+            this.mapper = mapper;
         }
 
         public override async Task<GetBookByIdReply> GetBookById(GetBookByIdRequest request, ServerCallContext context)
@@ -21,14 +24,8 @@ namespace Presentation.Services
             var result = await mediator.Send(new GetBookByIdQuery(request.BookId), context.CancellationToken);
             
             return new GetBookByIdReply
-            {
-                Book = new Book
-                { 
-                    BookId = result.Id,
-                    Copies = result.Copies,
-                    Pages = result.Pages,
-                    Name = result.Name
-                }
+            { 
+                Book = mapper.Map<Book>(result)
             };
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions;
 using Grpc.Net.Client;
+using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Presentation;
@@ -9,10 +10,12 @@ namespace Infrastructure.gRPC
     public class CoreLibraryGrpcClient : GRPCBaseClient, ICoreLibraryGrpcClient
     {
         private string clientUrl;
+        private readonly IMapper mapper;
 
-        public CoreLibraryGrpcClient(IConfiguration config, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        public CoreLibraryGrpcClient(IConfiguration config, IHttpContextAccessor httpContextAccessor, IMapper mapper) : base(httpContextAccessor)
         {
             clientUrl = config.GetSection("CoreLibraryServiceHost").Value;
+            this.mapper = mapper;
         }
 
         public async Task<Domain.Book> GetBookById(int bookId)
@@ -26,14 +29,7 @@ namespace Infrastructure.gRPC
 
             var result = await client.GetBookByIdAsync(requestMessage, GetCorrelationMetaData());
 
-            return await Task.FromResult(
-                new Domain.Book
-                { 
-                    Id = result.Book.BookId,
-                    Pages = result.Book.Pages,
-                    Copies = result.Book.Copies,
-                    Name = result.Book.Name
-                });
+            return await Task.FromResult(mapper.Map<Domain.Book>(result.Book));
         }
     }
 }
