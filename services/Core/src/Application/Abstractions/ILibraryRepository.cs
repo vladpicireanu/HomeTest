@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.Models;
+using Domain;
 
 namespace Application.Abstractions
 {
@@ -9,6 +10,8 @@ namespace Application.Abstractions
         Book GetBookById(int Id);
 
         BookAvailability GetBookAvailability(int Id);
+
+        List<Book> GetMostBorrowedBooks(int topRange);
 
         void CreateBook(Book book);
     }

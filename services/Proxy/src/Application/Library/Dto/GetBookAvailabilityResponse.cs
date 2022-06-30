@@ -1,13 +1,9 @@
-﻿namespace Application.Library.Dto
+﻿using Application.Models;
+
+namespace Application.Library.Dto
 {
     public class GetBookAvailabilityResponse
     {
-        public int BookId { get; set; }
-
-        public string Name { get; set; } = null!;
-
-        public int Borrowed { get; set; }
-
-        public int Available { get; set; }
+        public BookAvailability Book { get; set; } = null!;
     }
 }

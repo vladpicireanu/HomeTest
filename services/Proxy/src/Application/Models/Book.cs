@@ -1,4 +1,4 @@
-﻿namespace Domain
+﻿namespace Application.Models
 {
     public class Book
     {

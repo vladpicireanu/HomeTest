@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions;
+using Application.Models;
 using Domain;
 using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
@@ -35,15 +35,25 @@ namespace Infrastructure.Repository
         public BookAvailability GetBookAvailability(int Id)
         {
             var bookAvailability = context.Books.Where(book => book.BookId == Id)
-                .Select(i => new BookAvailability
+                .Select(book => new BookAvailability
                 {
-                    BookId = i.BookId,
-                    Name = i.Name,
-                    Borrowed = i.Rents.Count,
-                    Available = i.Copies - i.Rents.Count
+                    BookId = book.BookId,
+                    Name = book.Name,
+                    Borrowed = book.Rents.Count,
+                    Available = book.Copies - book.Rents.Count
                 }).FirstOrDefault();
 
             return bookAvailability;
+        }
+
+        public List<Book> GetMostBorrowedBooks(int topRange)
+        {
+            var bookAvailability = context.Books.OrderByDescending(book => book.Rents.Count()).ToList();
+
+            if (topRange > context.Books.Count())
+                return new List<Book>();
+
+            return bookAvailability.GetRange(0, topRange);
         }
     }
 }

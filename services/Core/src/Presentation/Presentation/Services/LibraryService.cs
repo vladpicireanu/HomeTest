@@ -25,7 +25,7 @@ namespace Presentation.Services
             
             return new GetBookByIdReply
             { 
-                Book = mapper.Map<Book>(result)
+                Book = mapper.Map<Book>(result.Book)
             };
         }
 
@@ -34,6 +34,15 @@ namespace Presentation.Services
             var result = await mediator.Send(new GetBookAvailabilityQuery(request.BookId), context.CancellationToken);
 
             return mapper.Map<GetBookAvailabilityReply>(result);
+        }
+        public override async Task<GetMostBorrowedBooksReply> GetMostBorrowedBooks(GetMostBorrowedBooksRequest request, ServerCallContext context)
+        {
+            var result = await mediator.Send(new GetMostBorrowedBooksQuery(request.TopRange), context.CancellationToken);
+            var response = new GetMostBorrowedBooksReply();
+
+            response.Books.AddRange(mapper.Map<List<Book>>(result.MostBorrowedBooks));
+
+            return response;
         }
     }
 }

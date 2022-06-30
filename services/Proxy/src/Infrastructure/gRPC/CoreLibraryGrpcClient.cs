@@ -1,5 +1,5 @@
 ﻿using Application.Abstractions;
-using Domain;
+using Application.Models;
 using Grpc.Net.Client;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +19,7 @@ namespace Infrastructure.gRPC
             this.mapper = mapper;
         }
 
-        public async Task<Domain.Book> GetBookById(int bookId)
+        public async Task<Application.Models.Book> GetBookById(int bookId)
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             using var channel = GrpcChannel.ForAddress(clientUrl);
@@ -30,7 +30,7 @@ namespace Infrastructure.gRPC
 
             var result = await client.GetBookByIdAsync(requestMessage, GetCorrelationMetaData());
 
-            return mapper.Map<Domain.Book>(result.Book);
+            return mapper.Map<Application.Models.Book>(result.Book);
         }
 
         public async Task<BookAvailability> GetBookAvailability(int bookId)
@@ -45,6 +45,20 @@ namespace Infrastructure.gRPC
             var result = await client.GetBookAvailabilityAsync(requestMessage, GetCorrelationMetaData());
 
             return mapper.Map<BookAvailability>(result);
+        }
+
+        public async Task<List<Application.Models.Book>> GetMostBorrowedBooks(int topRange)
+        {
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            using var channel = GrpcChannel.ForAddress(clientUrl);
+
+            var client = new Library.LibraryClient(channel);
+
+            var requestMessage = new GetMostBorrowedBooksRequest { TopRange = topRange };
+
+            var result = await client.GetMostBorrowedBooksAsync(requestMessage, GetCorrelationMetaData());
+
+            return mapper.Map<List<Application.Models.Book>>(result.Books);
         }
     }
 }

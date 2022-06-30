@@ -42,5 +42,18 @@ namespace Presentation.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("GetMostBorrowedBooks")]
+        public async Task<ActionResult> GetMostBorrowedBooks(int topRange)
+        {
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request : {topRange}");
+
+            var response = await mediator.Send(new GetMostBorrowedBooksQuery(topRange));
+
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
+
+            return Ok(response);
+        }
     }
 }

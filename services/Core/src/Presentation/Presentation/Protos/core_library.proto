@@ -9,6 +9,7 @@ package library;
 service Library {
 	rpc GetBookById (GetBookByIdRequest) returns (GetBookByIdReply);
 	rpc GetBookAvailability (GetBookAvailabilityRequest) returns (GetBookAvailabilityReply);
+	rpc GetMostBorrowedBooks (GetMostBorrowedBooksRequest) returns (GetMostBorrowedBooksReply);
 }
 
 message GetBookByIdRequest {
@@ -17,6 +18,10 @@ message GetBookByIdRequest {
 
 message GetBookAvailabilityRequest {
 	int32 book_id = 1;
+}
+
+message GetMostBorrowedBooksRequest {
+	int32 top_range = 1;
 }
 
 message GetBookByIdReply {
@@ -28,6 +33,10 @@ message GetBookAvailabilityReply {
 	string name = 2;
 	int32 borrowed = 3;
 	int32 available = 4;
+}
+
+message GetMostBorrowedBooksReply {
+	repeated Book books = 1;
 }
 
 message Book {

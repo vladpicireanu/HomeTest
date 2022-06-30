@@ -1,6 +1,5 @@
 ﻿using Application.Abstractions;
 using MediatR;
-using MapsterMapper;
 using Application.Library.Dto;
 
 namespace Application.Library.Queries
@@ -17,19 +16,17 @@ namespace Application.Library.Queries
         public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, GetBookByIdResponse>
         {
             private readonly ICoreLibraryGrpcClient coreLibraryGrpcClient;
-            private readonly IMapper mapper;
 
-            public GetBookByIdQueryHandler(ICoreLibraryGrpcClient coreLibraryGrpcClient, IMapper mapper)
+            public GetBookByIdQueryHandler(ICoreLibraryGrpcClient coreLibraryGrpcClient)
             {
                 this.coreLibraryGrpcClient = coreLibraryGrpcClient;
-                this.mapper = mapper;
             }
 
             public async Task<GetBookByIdResponse> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
             {
                 var response = await coreLibraryGrpcClient.GetBookById(request.BookId);
 
-                return mapper.Map<GetBookByIdResponse>(response);
+                return new GetBookByIdResponse { Book = response };
             }
         }
     }

@@ -2,6 +2,7 @@
 using MediatR;
 using MapsterMapper;
 using Application.Library.Dto;
+using Application.Models;
 
 namespace Application.Library.Queries
 {
@@ -27,7 +28,10 @@ namespace Application.Library.Queries
 
             public Task<GetBookByIdResponse> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
             {
-                var response = mapper.Map<GetBookByIdResponse>(libraryRepository.GetBookById(request.Id));
+                var response = new GetBookByIdResponse
+                {
+                    Book = mapper.Map<BookModel>(libraryRepository.GetBookById(request.Id))
+                };
 
                 return Task.FromResult(response);
             }
