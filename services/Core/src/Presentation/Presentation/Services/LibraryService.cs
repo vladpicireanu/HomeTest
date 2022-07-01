@@ -78,5 +78,15 @@ namespace Presentation.Services
 
             return response;
         }
+
+        public override async Task<GetBookReadRateReply> GetBookReadRate(GetBookReadRateRequest request, ServerCallContext context)
+        {
+            var result = await mediator.Send(new GetBookReadRateQuery(request.BookId), context.CancellationToken);
+            
+            return new GetBookReadRateReply
+            {
+                BookReadRate = result.BookReadRate
+            };
+        }
     }
 }

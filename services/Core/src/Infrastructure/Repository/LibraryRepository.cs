@@ -19,14 +19,6 @@ namespace Infrastructure.Repository
             return (context.SaveChanges() >= 0);
         }
 
-        public void CreateBook(Book book)
-        {
-            if (book != null)
-            {
-                context.Books.Add(book);
-            }
-        }
-
         public Book GetBookById(int Id)
         {
             return context.Books.FirstOrDefault(b => b.BookId == Id);
@@ -41,7 +33,8 @@ namespace Infrastructure.Repository
                     Name = book.Name,
                     Borrowed = book.Rents.Count,
                     Available = book.Copies - book.Rents.Count
-                }).FirstOrDefault();
+                })
+                .FirstOrDefault();
 
             return bookAvailability;
         }
@@ -85,14 +78,15 @@ namespace Infrastructure.Repository
                     Name = rent.Book.Name,
                     StartDate = rent.StartDate,
                     ReturnDate = rent.ReturnDate,
-                }).ToList();
+                })
+                .ToList();
 
             return userRents;
         }
 
         public List<Book> GetOtherBooks(int bookId)
         {
-            var booksRentByOthers = context.Rents.Where(rent => 
+            var otherBooksRented = context.Rents.Where(rent => 
                     rent.BookId != bookId 
                     && context.Rents.Where(r => r.BookId == bookId).Select(r => r.UserId).Contains(rent.UserId))
                 .Select(rent => new Book
@@ -101,9 +95,25 @@ namespace Infrastructure.Repository
                     Name = rent.Book.Name,
                     Pages = rent.Book.Pages,
                     Copies = rent.Book.Copies
-                }).Distinct().ToList();
+                })
+                .Distinct()
+                .ToList();
 
-            return booksRentByOthers;
+            return otherBooksRented;
+        }
+
+        public int GetBookReadRate(int bookId)
+        {
+            var bookReadRates = context.Rents.Where(rent => rent.BookId == bookId && rent.ReturnDate != null)
+                .Select(rent => rent.Book.Pages / (rent.ReturnDate.Value.Day  - rent.StartDate.Day))
+                .ToList();
+
+            if (bookReadRates.Count == 0)
+            {
+                return 0;
+            }
+
+            return bookReadRates.Sum()/bookReadRates.Count;
         }
     }
 }

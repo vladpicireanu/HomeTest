@@ -107,5 +107,19 @@ namespace Infrastructure.gRPC
 
             return mapper.Map<List<Application.Models.Book>>(result.Books);
         }
+
+        public async Task<int> GetBookReadRate(int bookId)
+        {
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            using var channel = GrpcChannel.ForAddress(clientUrl);
+
+            var client = new Library.LibraryClient(channel);
+
+            var requestMessage = new GetBookReadRateRequest { BookId = bookId };
+
+            var result = await client.GetBookReadRateAsync(requestMessage, GetCorrelationMetaData());
+
+            return result.BookReadRate;
+        }
     }
 }

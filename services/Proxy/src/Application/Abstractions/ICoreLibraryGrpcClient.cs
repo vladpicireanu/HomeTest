@@ -15,5 +15,7 @@ namespace Application.Abstractions
         Task<List<UserRent>> GetUserRents(int userId);
 
         Task<List<Book>> GetOtherBooks(int bookId);
+
+        Task<int> GetBookReadRate(int bookId);
     }
 }

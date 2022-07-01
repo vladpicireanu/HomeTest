@@ -19,6 +19,6 @@ namespace Application.Abstractions
 
         List<Book> GetOtherBooks(int bookId);
 
-        void CreateBook(Book book);
+        int GetBookReadRate(int bookId);
     }
 }

@@ -94,5 +94,18 @@ namespace Presentation.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet]
+        [Route("GetBookReadRate")]
+        public async Task<ActionResult> GetBookReadRate(int bookId)
+        {
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request : {bookId}");
+
+            var response = await mediator.Send(new GetBookReadRateQuery(bookId));
+
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
+
+            return Ok(response);
+        }
     }
 }
