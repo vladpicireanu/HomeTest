@@ -2,8 +2,6 @@
 using Application.Models;
 using Domain;
 using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Infrastructure.Repository
 {
@@ -50,24 +48,24 @@ namespace Infrastructure.Repository
 
         public List<Book> GetMostBorrowedBooks(int topRange)
         {
-            var bookAvailability = context.Books.OrderByDescending(book => book.Rents.Count()).ToList();
+            var mostBorrowedBooks = context.Books.OrderByDescending(book => book.Rents.Count()).ToList();
 
             if (topRange > context.Books.Count())
                 return new List<Book>();
 
-            return bookAvailability.GetRange(0, topRange);
+            return mostBorrowedBooks.GetRange(0, topRange);
         }
 
-        public List<UserMostRents> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime)
+        public List<UserMostRents> GetUsersWithMostRents(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate)
         {
-            var bookAvailability = context.Users
+            var usersWithMostRents = context.Users
                 .Select(user => new UserMostRents
                 {
                     UserId = user.UserId,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    Rents = user.Rents.Where(rent => rent.StartDate >= startTime && rent.StartDate <= endTime).Count()
+                    Rents = user.Rents.Where(rent => rent.StartDate >= startDate && rent.StartDate <= returnDate).Count()
                 })
                 .OrderByDescending(user => user.Rents)
                 .ToList();
@@ -75,7 +73,21 @@ namespace Infrastructure.Repository
             if (topRange > context.Users.Count())
                 return new List<UserMostRents>();
 
-            return bookAvailability.GetRange(0, topRange);
+            return usersWithMostRents.GetRange(0, topRange);
+        }
+
+        public List<UserRent> GetUserRents(int userId)
+        {
+            var userRents = context.Rents.Where(rent => rent.UserId == userId)
+                .Select(rent => new UserRent
+                {
+                    BookId = rent.BookId,
+                    Name = rent.Book.Name,
+                    StartDate = rent.StartDate,
+                    ReturnDate = rent.ReturnDate,
+                }).ToList();
+
+            return userRents;
         }
     }
 }

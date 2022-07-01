@@ -20,7 +20,7 @@ namespace Domain
         [Required]
         public DateTimeOffset StartDate { get; set; }
 
-        public DateTimeOffset? StopDate { get; set; }
+        public DateTimeOffset? ReturnDate { get; set; }
 
         public virtual Book Book { get; set; } = null!;
 

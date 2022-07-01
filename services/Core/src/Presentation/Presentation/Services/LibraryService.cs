@@ -49,12 +49,22 @@ namespace Presentation.Services
         public override async Task<GetUsersWithMostRentsReply> GetUsersWithMostRents(GetUsersWithMostRentsRequest request, ServerCallContext context)
         {
             var queryRequest = new GetUsersWithMostRentsQuery(
-                request.TopRange, request.StartTime.ToDateTimeOffset(), request.EndTime.ToDateTimeOffset());
+                request.TopRange, request.StartDate.ToDateTimeOffset(), request.ReturnDate.ToDateTimeOffset());
 
             var result = await mediator.Send(queryRequest, context.CancellationToken);
             var response = new GetUsersWithMostRentsReply();
 
             response.Users.AddRange(mapper.Map<List<User>>(result.Users));
+
+            return response;
+        }
+
+        public override async Task<GetUserRentsReply> GetUserRents(GetUserRentsRequest request, ServerCallContext context)
+        {
+            var result = await mediator.Send(new GetUserRentsQuery(request.UserId), context.CancellationToken);
+            var response = new GetUserRentsReply();
+
+            response.UserRents.AddRange(mapper.Map<List<UserRent>>(result.UserRents));
 
             return response;
         }

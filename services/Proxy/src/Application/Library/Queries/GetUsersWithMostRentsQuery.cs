@@ -7,18 +7,18 @@ namespace Application.Library.Queries
 {
     public class GetUsersWithMostRentsQuery : IRequest<GetUsersWithMostRentsResponse>
     {
-        public GetUsersWithMostRentsQuery(int topRange, DateTimeOffset startTime, DateTimeOffset endTime)
+        public GetUsersWithMostRentsQuery(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate)
         {
             TopRange = topRange;
-            StartTime = startTime;
-            EndTime = endTime;
+            StartDate = startDate;
+            ReturnDate = returnDate;
         }
 
         public int TopRange { get; private set; }
 
-        public DateTimeOffset StartTime { get; private set; }
+        public DateTimeOffset StartDate { get; private set; }
 
-        public DateTimeOffset EndTime { get; private set; }
+        public DateTimeOffset ReturnDate { get; private set; }
 
         public class GetUsersWithMostRentsQueryHandler : IRequestHandler<GetUsersWithMostRentsQuery, GetUsersWithMostRentsResponse>
         {
@@ -31,7 +31,7 @@ namespace Application.Library.Queries
 
             public async Task<GetUsersWithMostRentsResponse> Handle(GetUsersWithMostRentsQuery request, CancellationToken cancellationToken)
             {
-                var response = await coreLibraryGrpcClient.GetUsersWithMostRents(request.TopRange, request.StartTime, request.EndTime);
+                var response = await coreLibraryGrpcClient.GetUsersWithMostRents(request.TopRange, request.StartDate, request.ReturnDate);
 
                 return new GetUsersWithMostRentsResponse { Users = new List<UserMostRents>(response) };
             }

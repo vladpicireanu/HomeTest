@@ -13,7 +13,9 @@ namespace Application.Abstractions
 
         List<Book> GetMostBorrowedBooks(int topRange);
 
-        List<UserMostRents> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime);
+        List<UserMostRents> GetUsersWithMostRents(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate);
+
+        List<UserRent> GetUserRents(int userId);
 
         void CreateBook(Book book);
     }

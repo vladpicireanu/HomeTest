@@ -42,17 +42,17 @@ namespace Infrastructure.PreparationDb
                     new Rent() { BookId = 2, UserId = 3, StartDate = new DateTimeOffset(DateTime.Now) },
                     new Rent()
                     {
-                        BookId = 1,
+                        BookId = 2,
                         UserId = 1,
                         StartDate = new DateTimeOffset(DateTime.Now.AddDays(-3)),
-                        StopDate = new DateTimeOffset(DateTime.Now.AddDays(-1))
+                        ReturnDate = new DateTimeOffset(DateTime.Now.AddDays(-1))
                     },
                     new Rent()
                     {
                         BookId = 3,
                         UserId = 2,
                         StartDate = new DateTimeOffset(DateTime.Now.AddDays(-8)),
-                        StopDate = new DateTimeOffset(DateTime.Now.AddDays(-4))
+                        ReturnDate = new DateTimeOffset(DateTime.Now.AddDays(-4))
                     }
                 );
             }

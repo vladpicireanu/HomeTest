@@ -12,6 +12,7 @@ service Library {
 	rpc GetBookAvailability (GetBookAvailabilityRequest) returns (GetBookAvailabilityReply);
 	rpc GetMostBorrowedBooks (GetMostBorrowedBooksRequest) returns (GetMostBorrowedBooksReply);
 	rpc GetUsersWithMostRents (GetUsersWithMostRentsRequest) returns (GetUsersWithMostRentsReply);
+	rpc GetUserRents (GetUserRentsRequest) returns (GetUserRentsReply);
 }
 
 message GetBookByIdRequest {
@@ -28,8 +29,12 @@ message GetMostBorrowedBooksRequest {
 
 message GetUsersWithMostRentsRequest {
 	int32 top_range = 1;
-	google.protobuf.Timestamp start_time = 2;
-	google.protobuf.Timestamp end_time = 3;
+	google.protobuf.Timestamp start_date = 2;
+	google.protobuf.Timestamp return_date = 3;
+}
+
+message GetUserRentsRequest {
+	int32 user_id = 1;
 }
 
 message GetBookByIdReply {
@@ -51,6 +56,10 @@ message GetUsersWithMostRentsReply {
 	repeated User users = 1;
 }
 
+message GetUserRentsReply {
+	repeated UserRent user_rents = 1;
+}
+
 message Book {
 	int32 book_id = 1;
 	string name = 2;
@@ -59,9 +68,16 @@ message Book {
 }
 
 message User {
-	int32 UserId = 1;
-	string FirstName = 2;
-	string LastName = 3;
+	int32 user_id = 1;
+	string first_name = 2;
+	string last_name = 3;
 	google.protobuf.StringValue email = 4;
 	int32 rents = 5;
+}
+
+message UserRent {
+	int32 book_id = 1;
+	string name = 2;
+	google.protobuf.StringValue start_date = 3;
+	google.protobuf.StringValue return_date = 4;
 }

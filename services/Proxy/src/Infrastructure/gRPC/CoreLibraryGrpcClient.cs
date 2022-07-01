@@ -62,7 +62,7 @@ namespace Infrastructure.gRPC
             return mapper.Map<List<Application.Models.Book>>(result.Books);
         }
 
-        public async Task<List<UserMostRents>> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime)
+        public async Task<List<UserMostRents>> GetUsersWithMostRents(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate)
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             using var channel = GrpcChannel.ForAddress(clientUrl);
@@ -70,14 +70,28 @@ namespace Infrastructure.gRPC
 
             var requestMessage = new GetUsersWithMostRentsRequest
             { 
-                EndTime = endTime.ToTimestamp(),
-                StartTime = startTime.ToTimestamp(),
+                ReturnDate = returnDate.ToTimestamp(),
+                StartDate = startDate.ToTimestamp(),
                 TopRange = topRange
             };
 
             var result = await client.GetUsersWithMostRentsAsync(requestMessage, GetCorrelationMetaData());
 
             return mapper.Map<List<UserMostRents>>(result.Users);
+        }
+
+        public async Task<List<Application.Models.UserRent>> GetUserRents(int userId)
+        {
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            using var channel = GrpcChannel.ForAddress(clientUrl);
+
+            var client = new Library.LibraryClient(channel);
+
+            var requestMessage = new GetUserRentsRequest { UserId = userId };
+
+            var result = await client.GetUserRentsAsync(requestMessage, GetCorrelationMetaData());
+
+            return mapper.Map<List<Application.Models.UserRent>>(result.UserRents);
         }
     }
 }

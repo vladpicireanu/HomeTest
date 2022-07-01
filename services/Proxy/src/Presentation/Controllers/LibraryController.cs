@@ -58,11 +58,24 @@ namespace Presentation.Controllers
 
         [HttpGet]
         [Route("GetUsersWithMostRents")]
-        public async Task<ActionResult> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime)
+        public async Task<ActionResult> GetUsersWithMostRents(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate)
         {
-            logger.Log(LogLevel.Information, $"Proxy - > receiving request : {topRange} {startTime} {endTime}");
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request : {topRange} {startDate} {returnDate}");
 
-            var response = await mediator.Send(new GetUsersWithMostRentsQuery(topRange, startTime, endTime));
+            var response = await mediator.Send(new GetUsersWithMostRentsQuery(topRange, startDate, returnDate));
+
+            logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("GetUserRents")]
+        public async Task<ActionResult> GetUserRents(int userId)
+        {
+            logger.Log(LogLevel.Information, $"Proxy - > receiving request : {userId}");
+
+            var response = await mediator.Send(new GetUserRentsQuery(userId));
 
             logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
 
