@@ -89,5 +89,21 @@ namespace Infrastructure.Repository
 
             return userRents;
         }
+
+        public List<Book> GetOtherBooks(int bookId)
+        {
+            var booksRentByOthers = context.Rents.Where(rent => 
+                    rent.BookId != bookId 
+                    && context.Rents.Where(r => r.BookId == bookId).Select(r => r.UserId).Contains(rent.UserId))
+                .Select(rent => new Book
+                {
+                    BookId = rent.BookId,
+                    Name = rent.Book.Name,
+                    Pages = rent.Book.Pages,
+                    Copies = rent.Book.Copies
+                }).Distinct().ToList();
+
+            return booksRentByOthers;
+        }
     }
 }

@@ -6,31 +6,31 @@ using Application.Models;
 
 namespace Application.Library.Queries
 {
-    public class GetBookByIdQuery : IRequest<GetBookByIdResponse>
+    public class GetOtherBooksQuery : IRequest<GetOtherBooksResponse>
     {
-        public GetBookByIdQuery(int bookId)
+        public GetOtherBooksQuery(int bookId)
         {
             BookId = bookId;
         }
 
         public int BookId { get; private set; }
 
-        public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, GetBookByIdResponse>
+        public class GetOtherBooksQueryHandler : IRequestHandler<GetOtherBooksQuery, GetOtherBooksResponse>
         {
             private readonly ILibraryRepository libraryRepository;
             private readonly IMapper mapper;
 
-            public GetBookByIdQueryHandler(ILibraryRepository libraryRepository, IMapper mapper)
+            public GetOtherBooksQueryHandler(ILibraryRepository libraryRepository, IMapper mapper)
             {
                 this.libraryRepository = libraryRepository;
                 this.mapper = mapper;
             }
 
-            public Task<GetBookByIdResponse> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
+            public Task<GetOtherBooksResponse> Handle(GetOtherBooksQuery request, CancellationToken cancellationToken)
             {
-                var response = new GetBookByIdResponse
+                var response = new GetOtherBooksResponse
                 {
-                    Book = mapper.Map<BookModel>(libraryRepository.GetBookById(request.BookId))
+                    Books = mapper.Map<List<BookModel>>(libraryRepository.GetOtherBooks(request.BookId))
                 };
 
                 return Task.FromResult(response);

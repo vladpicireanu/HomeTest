@@ -22,7 +22,8 @@ namespace Infrastructure.PreparationDb
                 context.Books.AddRange(
                     new Book() { Name = "Red", Pages = 100, Copies = 10 },
                     new Book() { Name = "Blue", Pages = 200, Copies = 20 },
-                    new Book() { Name = "Black", Pages = 300, Copies = 50 }
+                    new Book() { Name = "Black", Pages = 300, Copies = 50 },
+                    new Book() { Name = "Green", Pages = 240, Copies = 40 }
                 );
             }
 
@@ -40,6 +41,7 @@ namespace Infrastructure.PreparationDb
                 context.Rents.AddRange(
                     new Rent() { BookId = 1, UserId = 1, StartDate = new DateTimeOffset(DateTime.Now.AddDays(-5)) },
                     new Rent() { BookId = 2, UserId = 3, StartDate = new DateTimeOffset(DateTime.Now) },
+                    new Rent() { BookId = 4, UserId = 3, StartDate = new DateTimeOffset(DateTime.Now.AddDays(-2)) },
                     new Rent()
                     {
                         BookId = 2,
@@ -53,6 +55,20 @@ namespace Infrastructure.PreparationDb
                         UserId = 2,
                         StartDate = new DateTimeOffset(DateTime.Now.AddDays(-8)),
                         ReturnDate = new DateTimeOffset(DateTime.Now.AddDays(-4))
+                    },
+                    new Rent()
+                    {
+                        BookId = 2,
+                        UserId = 2,
+                        StartDate = new DateTimeOffset(DateTime.Now.AddDays(-10)),
+                        ReturnDate = new DateTimeOffset(DateTime.Now.AddDays(-9))
+                    },
+                    new Rent()
+                    {
+                        BookId = 1,
+                        UserId = 2,
+                        StartDate = new DateTimeOffset(DateTime.Now.AddDays(-15)),
+                        ReturnDate = new DateTimeOffset(DateTime.Now.AddDays(-7))
                     }
                 );
             }

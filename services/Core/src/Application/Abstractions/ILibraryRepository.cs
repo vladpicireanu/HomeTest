@@ -17,6 +17,8 @@ namespace Application.Abstractions
 
         List<UserRent> GetUserRents(int userId);
 
+        List<Book> GetOtherBooks(int bookId);
+
         void CreateBook(Book book);
     }
 }

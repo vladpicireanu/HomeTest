@@ -13,6 +13,7 @@ service Library {
 	rpc GetMostBorrowedBooks (GetMostBorrowedBooksRequest) returns (GetMostBorrowedBooksReply);
 	rpc GetUsersWithMostRents (GetUsersWithMostRentsRequest) returns (GetUsersWithMostRentsReply);
 	rpc GetUserRents (GetUserRentsRequest) returns (GetUserRentsReply);
+	rpc GetOtherBooks (GetOtherBooksRequest) returns (GetOtherBooksReply);
 }
 
 message GetBookByIdRequest {
@@ -37,6 +38,10 @@ message GetUserRentsRequest {
 	int32 user_id = 1;
 }
 
+message GetOtherBooksRequest {
+	int32 book_id = 1;
+}
+
 message GetBookByIdReply {
 	Book book = 1;
 }
@@ -58,6 +63,10 @@ message GetUsersWithMostRentsReply {
 
 message GetUserRentsReply {
 	repeated UserRent user_rents = 1;
+}
+
+message GetOtherBooksReply {
+	repeated Book books = 1;
 }
 
 message Book {

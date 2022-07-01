@@ -68,5 +68,15 @@ namespace Presentation.Services
 
             return response;
         }
+
+        public override async Task<GetOtherBooksReply> GetOtherBooks(GetOtherBooksRequest request, ServerCallContext context)
+        {
+            var result = await mediator.Send(new GetOtherBooksQuery(request.BookId), context.CancellationToken);
+            var response = new GetOtherBooksReply();
+
+            response.Books.AddRange(mapper.Map<List<Book>>(result.Books));
+
+            return response;
+        }
     }
 }

@@ -13,5 +13,7 @@ namespace Application.Abstractions
         Task<List<UserMostRents>> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime);
 
         Task<List<UserRent>> GetUserRents(int userId);
+
+        Task<List<Book>> GetOtherBooks(int bookId);
     }
 }
