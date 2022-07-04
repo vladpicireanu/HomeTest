@@ -23,7 +23,8 @@ namespace Infrastructure.PreparationDb
                     new Book() { Name = "Red", Pages = 500, Copies = 10 },
                     new Book() { Name = "Blue", Pages = 200, Copies = 20 },
                     new Book() { Name = "Black", Pages = 300, Copies = 50 },
-                    new Book() { Name = "Green", Pages = 240, Copies = 40 }
+                    new Book() { Name = "Green", Pages = 240, Copies = 40 },
+                    new Book() { Name = "NoData", Pages = 740, Copies = 1 }
                 );
             }
 

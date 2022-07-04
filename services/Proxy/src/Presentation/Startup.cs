@@ -1,10 +1,16 @@
 ﻿using Application.Abstractions;
+using Application.Library.Queries;
+using Application.StarterTasks.Queries;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure.AutofacModules;
 using Infrastructure.gRPC;
 using Infrastructure.Mapper;
 using MediatR;
+using Presentation.ActionFilters;
+using Serilog;
 using System.Reflection;
 
 namespace Presentation
@@ -17,6 +23,11 @@ namespace Presentation
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .Enrich.WithCorrelationIdHeader("x-correlation-id")
+                .CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
@@ -35,8 +46,13 @@ namespace Presentation
 
             services.AddSwaggerGen();
 
-            services.AddControllers();
-
+            services.AddControllers(
+                  c =>
+                  {
+                      c.Filters.Add(typeof(ApiExceptionFilter));
+                  })
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetUsersWithMostRentsQuery>());
+            //services.AddValidatorsFromAssemblyContaining<GetUsersWithMostRentsQuery>();
             services.AddSingleton<ICoreLibraryGrpcClient, CoreLibraryGrpcClient>();
             services.AddAutofac();
             services.AddMapster();
@@ -57,6 +73,7 @@ namespace Presentation
 
             app.UseRouting();
 
+            app.UseSerilogRequestLogging();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

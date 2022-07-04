@@ -25,11 +25,11 @@ namespace Application.Library.Queries
                 this.mapper = mapper;
             }
 
-            public Task<GetBookAvailabilityResponse> Handle(GetBookAvailabilityQuery request, CancellationToken cancellationToken)
+            public async Task<GetBookAvailabilityResponse> Handle(GetBookAvailabilityQuery request, CancellationToken ct)
             {
-                var response = mapper.Map<GetBookAvailabilityResponse>(libraryRepository.GetBookAvailability(request.BookId));
-
-                return Task.FromResult(response);
+                var response = await libraryRepository.GetBookAvailability(request.BookId, ct);
+                
+                return mapper.Map<GetBookAvailabilityResponse>(response);
             }
         }
     }

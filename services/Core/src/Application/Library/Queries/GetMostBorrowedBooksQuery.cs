@@ -26,14 +26,14 @@ namespace Application.Library.Queries
                 this.mapper = mapper;
             }
 
-            public Task<GetMostBorrowedBooksResponse> Handle(GetMostBorrowedBooksQuery request, CancellationToken cancellationToken)
+            public async Task<GetMostBorrowedBooksResponse> Handle(GetMostBorrowedBooksQuery request, CancellationToken ct)
             {
-                var response = new GetMostBorrowedBooksResponse
-                {
-                    Books = mapper.Map<List<BookModel>>(libraryRepository.GetMostBorrowedBooks(request.TopRange))
-                };
+                var response = await libraryRepository.GetMostBorrowedBooks(request.TopRange, ct);
 
-                return Task.FromResult(response);
+                return new GetMostBorrowedBooksResponse
+                {
+                    Books = mapper.Map<List<BookModel>>(response)
+                };
             }
         }
     }

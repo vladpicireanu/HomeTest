@@ -7,6 +7,7 @@ using Infrastructure.Repository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Services;
+using Serilog;
 using static Application.Library.Queries.GetBookByIdQuery;
 
 namespace Presentation
@@ -18,6 +19,11 @@ namespace Presentation
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .Enrich.WithCorrelationIdHeader("x-correlation-id")
+                .CreateLogger();
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -40,6 +46,8 @@ namespace Presentation
             }
 
             app.UseRouting();
+
+            app.UseSerilogRequestLogging();
 
             app.UseEndpoints(endpoints =>
             {

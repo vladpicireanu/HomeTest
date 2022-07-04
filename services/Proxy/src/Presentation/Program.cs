@@ -1,4 +1,5 @@
 using Autofac.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Presentation
 {
@@ -11,6 +12,7 @@ namespace Presentation
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            .UseSerilog()
             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

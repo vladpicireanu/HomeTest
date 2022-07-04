@@ -1,21 +1,21 @@
-﻿using Application.Models;
+﻿using Application.Library.Dto.Responses;
 
 namespace Application.Abstractions
 {
     public  interface ICoreLibraryGrpcClient
     {
-        Task<Book> GetBookById(int bookId);
+        Task<GetBookByIdResponse> GetBookById(int bookId, CancellationToken cancellationToken);
 
-        Task<BookAvailability> GetBookAvailability(int bookId);
+        Task<GetBookAvailabilityResponse> GetBookAvailability(int bookId, CancellationToken cancellationToken);
 
-        Task<List<Book>> GetMostBorrowedBooks(int topRange);
+        Task<GetMostBorrowedBooksResponse> GetMostBorrowedBooks(int topRange, CancellationToken cancellationToken);
 
-        Task<List<UserMostRents>> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime);
+        Task<GetUsersWithMostRentsResponse> GetUsersWithMostRents(int topRange, DateTimeOffset startTime, DateTimeOffset endTime, CancellationToken cancellationToken);
 
-        Task<List<UserRent>> GetUserRents(int userId);
+        Task<GetUserRentsResponse> GetUserRents(int userId, CancellationToken cancellationToken);
 
-        Task<List<Book>> GetOtherBooks(int bookId);
+        Task<GetOtherBooksResponse> GetOtherBooks(int bookId, CancellationToken cancellationToken);
 
-        Task<int> GetBookReadRate(int bookId);
+        Task<GetBookReadRateResponse> GetBookReadRate(int bookId, CancellationToken cancellationToken);
     }
 }

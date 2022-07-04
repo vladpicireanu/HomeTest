@@ -2,6 +2,7 @@
 using Application.Models;
 using Domain;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
@@ -19,14 +20,14 @@ namespace Infrastructure.Repository
             return (context.SaveChanges() >= 0);
         }
 
-        public Book GetBookById(int Id)
+        public Task<Book> GetBookById(int bookId, CancellationToken ct)
         {
-            return context.Books.FirstOrDefault(b => b.BookId == Id);
+            return context.Books.FirstOrDefaultAsync(b => b.BookId == bookId, ct);
         }
 
-        public BookAvailability GetBookAvailability(int Id)
+        public Task<BookAvailability> GetBookAvailability(int bookId, CancellationToken ct)
         {
-            var bookAvailability = context.Books.Where(book => book.BookId == Id)
+            var bookAvailability = context.Books.Where(book => book.BookId == bookId)
                 .Select(book => new BookAvailability
                 {
                     BookId = book.BookId,
@@ -34,23 +35,28 @@ namespace Infrastructure.Repository
                     Borrowed = book.Rents.Count,
                     Available = book.Copies - book.Rents.Count
                 })
-                .FirstOrDefault();
+                .FirstOrDefaultAsync(ct);
 
             return bookAvailability;
         }
 
-        public List<Book> GetMostBorrowedBooks(int topRange)
+        public Task<List<Book>> GetMostBorrowedBooks(int topRange, CancellationToken ct)
         {
-            var mostBorrowedBooks = context.Books.OrderByDescending(book => book.Rents.Count()).ToList();
-
             if (topRange > context.Books.Count())
-                return new List<Book>();
+                return Task.FromResult(new List<Book>());
 
-            return mostBorrowedBooks.GetRange(0, topRange);
+            var mostBorrowedBooks = context.Books.OrderByDescending(book => book.Rents.Count())
+                .Take(topRange)
+                .ToListAsync(ct);
+
+            return mostBorrowedBooks;
         }
 
-        public List<UserMostRents> GetUsersWithMostRents(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate)
+        public Task<List<UserMostRents>> GetUsersWithMostRents(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate, CancellationToken ct)
         {
+            if (topRange > context.Users.Count())
+                return Task.FromResult(new List<UserMostRents>());
+
             var usersWithMostRents = context.Users
                 .Select(user => new UserMostRents
                 {
@@ -61,15 +67,13 @@ namespace Infrastructure.Repository
                     Rents = user.Rents.Where(rent => rent.StartDate >= startDate && rent.StartDate <= returnDate).Count()
                 })
                 .OrderByDescending(user => user.Rents)
-                .ToList();
+                .Take(topRange)
+                .ToListAsync(ct);
 
-            if (topRange > context.Users.Count())
-                return new List<UserMostRents>();
-
-            return usersWithMostRents.GetRange(0, topRange);
+            return usersWithMostRents;
         }
 
-        public List<UserRent> GetUserRents(int userId)
+        public Task<List<UserRent>> GetUserRents(int userId, CancellationToken ct)
         {
             var userRents = context.Rents.Where(rent => rent.UserId == userId)
                 .Select(rent => new UserRent
@@ -79,12 +83,12 @@ namespace Infrastructure.Repository
                     StartDate = rent.StartDate,
                     ReturnDate = rent.ReturnDate,
                 })
-                .ToList();
+                .ToListAsync(ct);
 
             return userRents;
         }
 
-        public List<Book> GetOtherBooks(int bookId)
+        public Task<List<Book>> GetOtherBooks(int bookId, CancellationToken ct)
         {
             var otherBooksRented = context.Rents.Where(rent => 
                     rent.BookId != bookId 
@@ -97,23 +101,23 @@ namespace Infrastructure.Repository
                     Copies = rent.Book.Copies
                 })
                 .Distinct()
-                .ToList();
+                .ToListAsync(ct);
 
             return otherBooksRented;
         }
 
-        public int GetBookReadRate(int bookId)
+        public Task<int> GetBookReadRate(int bookId, CancellationToken ct)
         {
             var bookReadRates = context.Rents.Where(rent => rent.BookId == bookId && rent.ReturnDate != null)
                 .Select(rent => rent.Book.Pages / (rent.ReturnDate.Value.Day  - rent.StartDate.Day))
-                .ToList();
+                .ToListAsync(ct);
 
-            if (bookReadRates.Count == 0)
+            if (bookReadRates.Result.Count == 0)
             {
-                return 0;
+                return Task.FromResult(0);
             }
 
-            return bookReadRates.Sum()/bookReadRates.Count;
+            return Task.FromResult(bookReadRates.Result.Sum()/bookReadRates.Result.Count);
         }
     }
 }

@@ -7,18 +7,18 @@ namespace Application.Abstractions
     {
         bool SaveChanges();
 
-        Book GetBookById(int Id);
+        Task<Book> GetBookById(int bookId, CancellationToken ct);
 
-        BookAvailability GetBookAvailability(int Id);
+        Task<BookAvailability> GetBookAvailability(int bookId, CancellationToken ct);
 
-        List<Book> GetMostBorrowedBooks(int topRange);
+        Task<List<Book>> GetMostBorrowedBooks(int topRange, CancellationToken ct);
 
-        List<UserMostRents> GetUsersWithMostRents(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate);
+        Task<List<UserMostRents>> GetUsersWithMostRents(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate, CancellationToken ct);
 
-        List<UserRent> GetUserRents(int userId);
+        Task<List<UserRent>> GetUserRents(int userId, CancellationToken ct);
 
-        List<Book> GetOtherBooks(int bookId);
+        Task<List<Book>> GetOtherBooks(int bookId, CancellationToken ct);
 
-        int GetBookReadRate(int bookId);
+        Task<int> GetBookReadRate(int bookId, CancellationToken ct);
     }
 }

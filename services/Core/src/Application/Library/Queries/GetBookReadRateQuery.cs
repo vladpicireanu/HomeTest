@@ -25,14 +25,14 @@ namespace Application.Library.Queries
                 this.mapper = mapper;
             }
 
-            public Task<GetBookReadRateResponse> Handle(GetBookReadRateQuery request, CancellationToken cancellationToken)
+            public async Task<GetBookReadRateResponse> Handle(GetBookReadRateQuery request, CancellationToken ct)
             {
-                var response = new GetBookReadRateResponse
-                {
-                    BookReadRate = libraryRepository.GetBookReadRate(request.BookId)
-                };
+                var response = await libraryRepository.GetBookReadRate(request.BookId, ct);
 
-                return Task.FromResult(response);
+                return new GetBookReadRateResponse
+                {
+                    BookReadRate = response
+                };
             }
         }
     }

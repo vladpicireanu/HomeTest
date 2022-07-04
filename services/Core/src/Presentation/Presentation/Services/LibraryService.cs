@@ -8,13 +8,11 @@ namespace Presentation.Services
 {
     public class LibraryService : Library.LibraryBase
     {
-        private readonly ILogger<LibraryService> _logger;
         private readonly IMediator mediator;
         private readonly IMapper mapper;
 
-        public LibraryService(ILogger<LibraryService> logger, IMediator mediator, IMapper mapper)
+        public LibraryService(IMediator mediator, IMapper mapper)
         {
-            _logger = logger;
             this.mediator = mediator;
             this.mapper = mapper;
         }
@@ -32,6 +30,11 @@ namespace Presentation.Services
         public override async Task<GetBookAvailabilityReply> GetBookAvailability(GetBookAvailabilityRequest request, ServerCallContext context)
         {
             var result = await mediator.Send(new GetBookAvailabilityQuery(request.BookId), context.CancellationToken);
+
+            if (result == null)
+            {
+                return new GetBookAvailabilityReply();
+            }
 
             return mapper.Map<GetBookAvailabilityReply>(result);
         }

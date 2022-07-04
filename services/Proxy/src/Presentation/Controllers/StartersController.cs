@@ -27,11 +27,7 @@ namespace Presentation.Controllers
 
             logger.Log(LogLevel.Information, $"Proxy - > sending response : {response}");
 
-            if (!response)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            return Ok(response);
         }
 
         [HttpGet]

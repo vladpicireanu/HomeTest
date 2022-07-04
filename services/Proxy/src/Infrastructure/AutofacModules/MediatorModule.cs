@@ -1,4 +1,6 @@
-﻿using Application.StarterTasks.Queries;
+﻿using Application.Behaviours;
+using Application.Library.Queries;
+using Application.StarterTasks.Queries;
 using Autofac;
 using MediatR;
 using System.Reflection;
@@ -19,10 +21,9 @@ namespace Infrastructure.AutofacModules
                 return t => { object o; return componentContext.TryResolve(t, out o) ? o : null; };
             });
             builder
-             .RegisterAssemblyTypes(typeof(IsNumberTwoPowerQuery).Assembly).AsClosedTypesOf(typeof(IRequestHandler<,>));
+             .RegisterAssemblyTypes(typeof(GetUsersWithMostRentsQuery).Assembly).AsClosedTypesOf(typeof(IRequestHandler<,>));
 
-            //builder.RegisterGeneric(typeof(LoggingBehavior<,>)).As(typeof(IPipelineBehavior<,>));
-            //builder.RegisterGeneric(typeof(ValidatorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
+            builder.RegisterGeneric(typeof(ValidatorBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
 
         }
     }

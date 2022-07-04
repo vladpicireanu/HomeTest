@@ -32,14 +32,14 @@ namespace Application.Library.Queries
                 this.mapper = mapper;
             }
 
-            public Task<GetUsersWithMostRentsResponse> Handle(GetUsersWithMostRentsQuery request, CancellationToken cancellationToken)
+            public async Task<GetUsersWithMostRentsResponse> Handle(GetUsersWithMostRentsQuery request, CancellationToken ct)
             {
-                var response = new GetUsersWithMostRentsResponse
-                {
-                    Users = mapper.Map<List<UserMostRents>>(libraryRepository.GetUsersWithMostRents(request.TopRange, request.StartDate, request.ReturnDate))
-                };
+                var response = await libraryRepository.GetUsersWithMostRents(request.TopRange, request.StartDate, request.ReturnDate, ct);
 
-                return Task.FromResult(response);
+                return new GetUsersWithMostRentsResponse
+                {
+                    Users = mapper.Map<List<UserMostRents>>(response)
+                };
             }
         }
     }

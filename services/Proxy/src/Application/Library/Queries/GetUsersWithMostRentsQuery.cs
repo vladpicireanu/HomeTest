@@ -2,10 +2,12 @@
 using MediatR;
 using Application.Library.Dto.Responses;
 using Application.Models;
+using Microsoft.Extensions.Logging;
+using Domain;
 
 namespace Application.Library.Queries
 {
-    public class GetUsersWithMostRentsQuery : IRequest<GetUsersWithMostRentsResponse>
+    public class GetUsersWithMostRentsQuery : IRequest<GenericResponse<GetUsersWithMostRentsResponse>>
     {
         public GetUsersWithMostRentsQuery(int topRange, DateTimeOffset startDate, DateTimeOffset returnDate)
         {
@@ -20,20 +22,35 @@ namespace Application.Library.Queries
 
         public DateTimeOffset ReturnDate { get; private set; }
 
-        public class GetUsersWithMostRentsQueryHandler : IRequestHandler<GetUsersWithMostRentsQuery, GetUsersWithMostRentsResponse>
+        public class GetUsersWithMostRentsQueryHandler : IRequestHandler<GetUsersWithMostRentsQuery, GenericResponse<GetUsersWithMostRentsResponse>>
         {
             private readonly ICoreLibraryGrpcClient coreLibraryGrpcClient;
+            private readonly ILogger<GetUsersWithMostRentsQueryHandler> logger;
 
-            public GetUsersWithMostRentsQueryHandler(ICoreLibraryGrpcClient coreLibraryGrpcClient)
+            public GetUsersWithMostRentsQueryHandler(
+                ICoreLibraryGrpcClient coreLibraryGrpcClient,
+                ILogger<GetUsersWithMostRentsQueryHandler> logger)
             {
                 this.coreLibraryGrpcClient = coreLibraryGrpcClient;
+                this.logger = logger;
             }
 
-            public async Task<GetUsersWithMostRentsResponse> Handle(GetUsersWithMostRentsQuery request, CancellationToken cancellationToken)
+            public async Task<GenericResponse<GetUsersWithMostRentsResponse>> Handle(GetUsersWithMostRentsQuery request, CancellationToken cancellationToken)
             {
-                var response = await coreLibraryGrpcClient.GetUsersWithMostRents(request.TopRange, request.StartDate, request.ReturnDate);
+                var response = await coreLibraryGrpcClient.GetUsersWithMostRents(request.TopRange, request.StartDate, request.ReturnDate, cancellationToken);
 
-                return new GetUsersWithMostRentsResponse { Users = new List<UserMostRents>(response) };
+                if (!response.Users.Any())
+                {
+                    logger.Log(LogLevel.Error, "ErrorCode : {ErrorCode}; Message : {Message}", ErrorCode.GetUsersWithMostRentsRangeLarge, ErrorMessage.GetUsersWithMostRentsRangeLarge);
+                    
+                    return new GenericResponse<GetUsersWithMostRentsResponse>(new Error
+                    {
+                        ErrorCode = ErrorCode.GetUsersWithMostRentsRangeLarge,
+                        Message = ErrorMessage.GetUsersWithMostRentsRangeLarge
+                    });
+                }
+
+                return new GenericResponse<GetUsersWithMostRentsResponse>(response);
             }
         }
     }

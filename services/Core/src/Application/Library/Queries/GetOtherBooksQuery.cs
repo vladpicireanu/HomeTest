@@ -26,14 +26,14 @@ namespace Application.Library.Queries
                 this.mapper = mapper;
             }
 
-            public Task<GetOtherBooksResponse> Handle(GetOtherBooksQuery request, CancellationToken cancellationToken)
+            public async Task<GetOtherBooksResponse> Handle(GetOtherBooksQuery request, CancellationToken ct)
             {
-                var response = new GetOtherBooksResponse
-                {
-                    Books = mapper.Map<List<BookModel>>(libraryRepository.GetOtherBooks(request.BookId))
-                };
+                var response = await libraryRepository.GetOtherBooks(request.BookId, ct);
 
-                return Task.FromResult(response);
+                return new GetOtherBooksResponse
+                {
+                    Books = mapper.Map<List<BookModel>>(response)
+                };
             }
         }
     }

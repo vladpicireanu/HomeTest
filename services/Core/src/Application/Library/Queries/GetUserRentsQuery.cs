@@ -26,14 +26,14 @@ namespace Application.Library.Queries
                 this.mapper = mapper;
             }
 
-            public Task<GetUserRentsResponse> Handle(GetUserRentsQuery request, CancellationToken cancellationToken)
+            public async Task<GetUserRentsResponse> Handle(GetUserRentsQuery request, CancellationToken ct)
             {
-                var response = new GetUserRentsResponse
+                var result = await libraryRepository.GetUserRents(request.UserId, ct);
+                
+                return new GetUserRentsResponse
                 {
-                    UserRents = mapper.Map<List<UserRent>>(libraryRepository.GetUserRents(request.UserId))
+                    UserRents = mapper.Map<List<UserRent>>(result)
                 };
-
-                return Task.FromResult(response);
             }
         }
     }

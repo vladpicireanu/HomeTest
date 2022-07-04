@@ -2,10 +2,12 @@
 using MediatR;
 using Application.Library.Dto.Responses;
 using Application.Models;
+using Microsoft.Extensions.Logging;
+using Domain;
 
 namespace Application.Library.Queries
 {
-    public class GetOtherBooksQuery : IRequest<GetOtherBooksResponse>
+    public class GetOtherBooksQuery : IRequest<GenericResponse<GetOtherBooksResponse>>
     {
         public GetOtherBooksQuery(int bookId)
         {
@@ -14,20 +16,36 @@ namespace Application.Library.Queries
 
         public int BookId { get; private set; }
 
-        public class GetOtherBooksQueryHandler : IRequestHandler<GetOtherBooksQuery, GetOtherBooksResponse>
+        public class GetOtherBooksQueryHandler : IRequestHandler<GetOtherBooksQuery, GenericResponse<GetOtherBooksResponse>>
         {
             private readonly ICoreLibraryGrpcClient coreLibraryGrpcClient;
+            private readonly ILogger<GetOtherBooksQueryHandler> logger;
 
-            public GetOtherBooksQueryHandler(ICoreLibraryGrpcClient coreLibraryGrpcClient)
+            public GetOtherBooksQueryHandler(
+                ICoreLibraryGrpcClient coreLibraryGrpcClient,
+                ILogger<GetOtherBooksQueryHandler> logger)
             {
                 this.coreLibraryGrpcClient = coreLibraryGrpcClient;
+                this.logger = logger;
             }
 
-            public async Task<GetOtherBooksResponse> Handle(GetOtherBooksQuery request, CancellationToken cancellationToken)
+            public async Task<GenericResponse<GetOtherBooksResponse>> Handle(GetOtherBooksQuery request, CancellationToken cancellationToken)
             {
-                var response = await coreLibraryGrpcClient.GetOtherBooks(request.BookId);
+                var response = await coreLibraryGrpcClient.GetOtherBooks(request.BookId, cancellationToken);
 
-                return new GetOtherBooksResponse { Books = new List<Book>(response) };
+                if (!response.Books.Any())
+                {
+                    logger.Log(LogLevel.Error, "ErrorCode : {ErrorCode}; Message : {Message}", 
+                        ErrorCode.GetOtherBooksNoData, ErrorMessage.GetOtherBooksNoData);
+
+                    return new GenericResponse<GetOtherBooksResponse>(new Error
+                    {
+                        ErrorCode = ErrorCode.GetOtherBooksNoData,
+                        Message = ErrorMessage.GetOtherBooksNoData
+                    });
+                }
+
+                return new GenericResponse<GetOtherBooksResponse>(response);
             }
         }
     }
